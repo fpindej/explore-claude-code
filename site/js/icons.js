@@ -87,21 +87,6 @@ const Icons = {
     </svg>`;
   },
 
-  featureRules(size = 20) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-      <path d="M10 2L3 6v6c0 3.5 3 6.5 7 8 4-1.5 7-4.5 7-8V6l-7-4z" stroke-width="1.3" stroke-linejoin="round"/>
-      <path d="M7 10l2 2 4-4" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>`;
-  },
-
-  featureMemory(size = 20) {
-    return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
-      <ellipse cx="10" cy="6" rx="6" ry="2.5" stroke-width="1.3"/>
-      <path d="M4 6v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V6" stroke-width="1.3"/>
-      <path d="M4 10v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V10" stroke-width="1.3"/>
-    </svg>`;
-  },
-
   featureMcp(size = 20) {
     return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
       <circle cx="6" cy="10" r="3" stroke-width="1.3"/>
@@ -122,6 +107,34 @@ const Icons = {
     </svg>`;
   },
 
+  featureHooks(size = 20) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+      <path d="M10 3v4" stroke-width="1.3" stroke-linecap="round"/>
+      <path d="M10 7c0 2.5-3 2.5-3 5a3 3 0 0 0 6 0" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <circle cx="10" cy="3" r="1.5" stroke-width="1.2"/>
+      <path d="M5 6h2M13 6h2" stroke-width="1" stroke-linecap="round"/>
+    </svg>`;
+  },
+
+  featurePlugins(size = 20) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+      <rect x="3" y="7" width="14" height="10" rx="2" stroke-width="1.3"/>
+      <path d="M7 7V5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2" stroke-width="1.2"/>
+      <path d="M11 7V5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2" stroke-width="1.2"/>
+      <path d="M7 12h6" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M7 14.5h4" stroke-width="1" stroke-linecap="round"/>
+    </svg>`;
+  },
+
+  featureMarketplaces(size = 20) {
+    return `<svg width="${size}" height="${size}" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+      <path d="M3 8h14v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z" stroke-width="1.3"/>
+      <path d="M3 8l1.5-4h11L17 8" stroke-width="1.3" stroke-linejoin="round"/>
+      <path d="M7 8v1a3 3 0 0 0 6 0V8" stroke-width="1.2"/>
+      <path d="M8 14h4" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>`;
+  },
+
   // ── Utility ────────────────────────────────────────────────
 
   /** Get file icon based on extension */
@@ -139,10 +152,11 @@ const Icons = {
       'settings': this.featureSettings,
       'commands': this.featureCommands,
       'skills': this.featureSkills,
-      'rules': this.featureRules,
-      'memory': this.featureMemory,
       'mcp': this.featureMcp,
+      'hooks': this.featureHooks,
       'agents': this.featureAgents,
+      'plugins': this.featurePlugins,
+      'marketplaces': this.featureMarketplaces,
     };
     const fn = map[id];
     return fn ? fn.call(this, size) : this.fileGeneric(size);
