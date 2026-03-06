@@ -29,6 +29,10 @@
       "label": "rules",
       "color": "#a89a48"
     },
+    "hooks": {
+      "label": "hooks",
+      "color": "#ad6e5e"
+    },
     "code": {
       "label": "code",
       "color": "#5e82a0"
@@ -71,10 +75,15 @@
       "description": "Connect Claude to external tools, APIs, and services via a standard protocol.",
       "order": 7
     },
+    "hooks": {
+      "title": "Hooks",
+      "description": "Run custom scripts automatically before or after Claude's tool calls.",
+      "order": 8
+    },
     "agents": {
       "title": "Agents",
       "description": "Create specialised subagents and coordinate agent teams for parallel work.",
-      "order": 8
+      "order": 9
     }
   },
   "tree": [
@@ -254,6 +263,41 @@
                   "label": "Agent File Scaffolding",
                   "description": "A starter agent file showing YAML frontmatter configuration and system prompt structure.",
                   "contentFile": ".claude/agents/my-agent/my-agent.md"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "hooks",
+          "path": ".claude/hooks",
+          "type": "directory",
+          "badge": "hooks",
+          "children": [
+            {
+              "name": "HOOKS.md",
+              "path": ".claude/hooks/HOOKS.md",
+              "type": "file",
+              "feature": "hooks",
+              "badge": "hooks",
+              "label": "Hooks Overview",
+              "description": "Learn how hooks intercept Claude's actions to run validation, formatting, and safety checks.",
+              "contentFile": ".claude/hooks/HOOKS.md"
+            },
+            {
+              "name": "my-hook",
+              "path": ".claude/hooks/my-hook",
+              "type": "directory",
+              "children": [
+                {
+                  "name": "my-hook.sh",
+                  "path": ".claude/hooks/my-hook/my-hook.sh",
+                  "type": "file",
+                  "feature": "hooks",
+                  "badge": "hooks",
+                  "label": "Hook Script Scaffolding",
+                  "description": "A starter hook script showing how to read JSON input, check conditions, and return decisions.",
+                  "contentFile": ".claude/hooks/my-hook/my-hook.sh"
                 }
               ]
             }
