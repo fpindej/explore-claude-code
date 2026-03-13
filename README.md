@@ -34,8 +34,12 @@ A simulated Claude Code project you can click through. Every file and folder in 
 | `.claude/plugins/` | Extend Claude with custom tools and resources |
 | `.mcp.json` | MCP server config for external tool integrations |
 | `src/` | Example source code sitting alongside real config |
+| **built-in/** | Features that ship with Claude Code (no setup required) |
+| `built-in/bundled-skills/` | `/simplify`, `/batch`, `/debug`, `/loop`, `/claude-api` |
 
-Every piece of content in the explorer is written as if it were a real config file in a real repo. You're not reading *about* the config, you're reading *the config itself*, annotated so you understand every line. When you're done exploring, you can copy the scaffolding straight into your own projects.
+The explorer is split into two sections. Everything under `.claude/` is project config you create and commit. Everything under `built-in/` covers features that ship with Claude Code out of the box, no setup required. A visual separator divides the two.
+
+Every piece of content is written as if it were a real config file in a real repo. You're not reading *about* the config, you're reading *the config itself*, annotated so you understand every line. When you're done exploring, you can copy the scaffolding straight into your own projects.
 
 ## 🚀 Try It
 
