@@ -8,6 +8,7 @@ class FileExplorer {
     this.manifest = manifest;
     this.onFileSelect = onFileSelect;
     this.expandedDirs = new Set(['.claude']);
+    this._animating = new Set();
     this.selectedPath = null;
     this.flatFiles = [];
     this._buildFlatList(manifest.tree);
@@ -54,6 +55,7 @@ class FileExplorer {
   _renderDirectory(node, depth) {
     const wrapper = document.createElement('div');
     wrapper.className = 'tree-dir';
+    wrapper.dataset.path = node.path;
 
     const item = document.createElement('div');
     item.className = 'tree-item tree-item-dir';
@@ -117,16 +119,18 @@ class FileExplorer {
     }
 
     item.addEventListener('click', () => {
+      if (this._animating.has(node.path)) return;
+
       const expanding = !this.expandedDirs.has(node.path);
 
       if (expanding) {
         this.expandedDirs.add(node.path);
         icon.innerHTML = Icons.folderOpen(14);
-        if (childrenDiv) this._expandChildren(childrenDiv, depth);
+        if (childrenDiv) this._expandChildren(childrenDiv, depth, node.path);
       } else {
         this.expandedDirs.delete(node.path);
         icon.innerHTML = Icons.folderClosed(14);
-        if (childrenDiv) this._collapseChildren(childrenDiv);
+        if (childrenDiv) this._collapseChildren(childrenDiv, node.path);
       }
     });
 
@@ -219,8 +223,26 @@ class FileExplorer {
     });
   }
 
+  /** Redraw canvas lines for all ancestor directories (called after a child
+   *  directory expands or collapses, since layout positions change at every level). */
+  _redrawAncestorLines(container) {
+    let node = container;
+    while (node) {
+      const dirWrapper = node.parentElement; // .tree-dir
+      if (!dirWrapper) break;
+      const parentGuided = dirWrapper.parentElement; // .tree-children-guided
+      if (!parentGuided || !parentGuided.classList.contains('tree-children-guided')) break;
+      const depth = parseInt(parentGuided.dataset.depth, 10);
+      if (isNaN(depth)) break;
+      this._drawStaticLines(parentGuided, depth);
+      // Walk up to the next ancestor
+      node = parentGuided.closest('.tree-children');
+    }
+  }
+
   /** Animate expanding — draw tree lines segment by segment as children appear */
-  _expandChildren(container, depth) {
+  _expandChildren(container, depth, dirPath) {
+    this._animating.add(dirPath);
     container.classList.add('expanded');
 
     const guided = container.querySelector('.tree-children-guided');
@@ -241,6 +263,16 @@ class FileExplorer {
 
       const x = this._guideX(depth);
       let prevY = 0;
+
+      // Continuously redraw ancestor lines during the entire expand so
+      // sibling connectors track smoothly as the container grows
+      let expandFinished = false;
+      const redrawLoop = () => {
+        if (expandFinished) return;
+        this._redrawAncestorLines(container);
+        requestAnimationFrame(redrawLoop);
+      };
+      requestAnimationFrame(redrawLoop);
 
       items.forEach((el, i) => {
         const delay = i * 180 + 40;
@@ -298,6 +330,9 @@ class FileExplorer {
                   container.style.maxHeight = '';
                   container.style.overflow = '';
                   container.style.transition = '';
+                  this._animating.delete(dirPath);
+                  expandFinished = true;
+                  this._redrawAncestorLines(container);
                 }, 200);
               }
             } else {
@@ -311,25 +346,154 @@ class FileExplorer {
     });
   }
 
-  /** Animate collapsing — fade children out in reverse, then remove canvas */
-  _collapseChildren(container) {
-    const guided = container.querySelector('.tree-children-guided');
-    const items = guided.querySelectorAll(':scope > .tree-item, :scope > .tree-dir');
-    const count = items.length;
+  /**
+   * Collect all visible items in the subtree in visual order (top-to-bottom
+   * as they appear on screen). Recurses into expanded child directories.
+   */
+  _collectVisualOrder(guided) {
+    const result = [];
+    const directItems = guided.querySelectorAll(':scope > .tree-item, :scope > .tree-dir');
 
-    // Fade out in reverse
-    items.forEach((el, i) => {
-      setTimeout(() => {
-        el.classList.remove('tree-visible');
-      }, (count - 1 - i) * 40);
+    for (const el of directItems) {
+      if (el.classList.contains('tree-dir')) {
+        // The directory row itself appears first visually
+        if (el.classList.contains('tree-visible')) {
+          result.push({ el, isDir: true, path: el.dataset.path });
+        }
+        // Then its expanded children appear below it
+        const childrenDiv = el.querySelector(':scope > .tree-children.expanded');
+        if (childrenDiv) {
+          const nestedGuided = childrenDiv.querySelector('.tree-children-guided');
+          if (nestedGuided) {
+            result.push(...this._collectVisualOrder(nestedGuided));
+          }
+        }
+      } else if (el.classList.contains('tree-visible')) {
+        result.push({ el, isDir: false, path: null });
+      }
+    }
+
+    return result;
+  }
+
+  /** Animate collapsing — items fade out bottom-to-top in reverse visual
+   *  order with the same timing as expand (180ms stagger + 40ms offset).
+   *  The root container progressively shrinks via maxHeight to clip away
+   *  faded items so no empty space remains. */
+  _collapseChildren(container, dirPath) {
+    this._animating.add(dirPath);
+
+    const guided = container.querySelector('.tree-children-guided');
+
+    // Collect every visible item top-to-bottom, then reverse for bottom-to-top
+    const allVisible = this._collectVisualOrder(guided);
+    allVisible.reverse();
+
+    if (allVisible.length === 0) {
+      this._snapCollapseAll(guided, container);
+      this._animating.delete(dirPath);
+      return;
+    }
+
+    // Clip the root container so we can shrink it progressively.
+    // Only the root container needs maxHeight — it wraps all nesting levels.
+    const containerRect = container.getBoundingClientRect();
+    container.style.overflow = 'hidden';
+    container.style.maxHeight = container.scrollHeight + 'px';
+    container.offsetHeight; // force reflow
+    container.style.transition = 'max-height 0.2s ease';
+
+    // Pre-compute each item's top offset relative to the root container
+    // (must be done before any items start fading, while layout is stable)
+    const itemOffsets = allVisible.map(entry => {
+      const elRect = entry.el.getBoundingClientRect();
+      return elRect.top - containerRect.top;
     });
 
-    // After all hidden, collapse and clean up
+    const delay = 180;
+    const initialOffset = 40;
+
+    // Continuously redraw ancestor lines during the entire collapse so
+    // sibling connectors track smoothly as the container shrinks
+    let collapseFinished = false;
+    const redrawLoop = () => {
+      if (collapseFinished) return;
+      this._redrawAncestorLines(container);
+      requestAnimationFrame(redrawLoop);
+    };
+    requestAnimationFrame(redrawLoop);
+
+    allVisible.forEach((entry, i) => {
+      setTimeout(() => {
+        // Fade + slide the item via CSS
+        entry.el.classList.remove('tree-visible');
+
+        // Shrink root container to clip just above this item (slight delay
+        // so the fade/slide is visible before the item is clipped away)
+        setTimeout(() => {
+          container.style.maxHeight = itemOffsets[i] + 'px';
+        }, 120);
+      }, i * delay + initialOffset);
+    });
+
+    // After the last item fades + CSS transition finishes, clean up
+    const totalTime = allVisible.length * delay + initialOffset + 300;
+
     setTimeout(() => {
-      const canvas = guided.querySelector('.tree-guide-canvas');
-      if (canvas) canvas.remove();
+      collapseFinished = true;
+
+      // Remove all canvases
+      guided.querySelectorAll('.tree-guide-canvas').forEach(c => c.remove());
+
+      // Reset all nested expanded containers
+      guided.querySelectorAll('.tree-children.expanded').forEach(nested => {
+        nested.classList.remove('expanded');
+      });
+
+      // Reset all nested dir state (expandedDirs + icons)
+      guided.querySelectorAll('.tree-dir').forEach(dirEl => {
+        const p = dirEl.dataset.path;
+        if (p && this.expandedDirs.has(p)) {
+          this.expandedDirs.delete(p);
+          this._animating.delete(p);
+          const ic = dirEl.querySelector(':scope > .tree-item-dir .tree-icon--svg');
+          if (ic) ic.innerHTML = Icons.folderClosed(14);
+        }
+      });
+
+      // Clear any remaining tree-visible
+      guided.querySelectorAll('.tree-visible').forEach(el => el.classList.remove('tree-visible'));
+
+      // Collapse root container and clean inline styles
       container.classList.remove('expanded');
-    }, count * 40 + 100);
+      container.style.maxHeight = '';
+      container.style.overflow = '';
+      container.style.transition = '';
+      this._animating.delete(dirPath);
+      this._redrawAncestorLines(container);
+    }, totalTime);
+  }
+
+  /** Snap-close helper for edge cases (no visible items) */
+  _snapCollapseAll(guided, container) {
+    guided.querySelectorAll('.tree-guide-canvas').forEach(c => c.remove());
+
+    guided.querySelectorAll('.tree-children.expanded').forEach(nested => {
+      nested.classList.remove('expanded');
+    });
+
+    guided.querySelectorAll('.tree-dir').forEach(dirEl => {
+      const path = dirEl.dataset.path;
+      if (path && this.expandedDirs.has(path)) {
+        this.expandedDirs.delete(path);
+        const icon = dirEl.querySelector(':scope > .tree-item-dir .tree-icon--svg');
+        if (icon) icon.innerHTML = Icons.folderClosed(14);
+      }
+    });
+
+    guided.querySelectorAll('.tree-visible').forEach(el => el.classList.remove('tree-visible'));
+
+    container.classList.remove('expanded');
   }
 
   _renderFile(node, depth) {

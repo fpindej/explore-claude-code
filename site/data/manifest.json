@@ -450,14 +450,14 @@
           "name": "bundled-skills",
           "path": "built-in/bundled-skills",
           "type": "directory",
-          "badge": "builtin",
+          "badge": "skill",
           "children": [
             {
               "name": "BUNDLED-SKILLS.md",
               "path": "built-in/bundled-skills/BUNDLED-SKILLS.md",
               "type": "file",
               "feature": "bundled-skills",
-              "badge": "builtin",
+              "badge": "skill",
               "label": "Bundled Skills Overview",
               "description": "Prompt-based workflows that ship with every session. How they work and how they differ from custom skills.",
               "contentFile": "built-in/bundled-skills/BUNDLED-SKILLS.md"
@@ -472,7 +472,7 @@
                   "path": "built-in/bundled-skills/simplify/simplify.md",
                   "type": "file",
                   "feature": "bundled-skills",
-                  "badge": "builtin",
+                  "badge": "skill",
                   "label": "/simplify",
                   "description": "Spawns three parallel review agents to check code reuse, quality, and efficiency.",
                   "contentFile": "built-in/bundled-skills/simplify/simplify.md"
@@ -489,7 +489,7 @@
                   "path": "built-in/bundled-skills/batch/batch.md",
                   "type": "file",
                   "feature": "bundled-skills",
-                  "badge": "builtin",
+                  "badge": "skill",
                   "label": "/batch",
                   "description": "Orchestrates large-scale parallel changes across a codebase using git worktrees.",
                   "contentFile": "built-in/bundled-skills/batch/batch.md"
@@ -506,7 +506,7 @@
                   "path": "built-in/bundled-skills/debug/debug.md",
                   "type": "file",
                   "feature": "bundled-skills",
-                  "badge": "builtin",
+                  "badge": "skill",
                   "label": "/debug",
                   "description": "Reads the session debug log to troubleshoot tool failures and unexpected behaviour.",
                   "contentFile": "built-in/bundled-skills/debug/debug.md"
@@ -523,7 +523,7 @@
                   "path": "built-in/bundled-skills/loop/loop.md",
                   "type": "file",
                   "feature": "bundled-skills",
-                  "badge": "builtin",
+                  "badge": "skill",
                   "label": "/loop",
                   "description": "Schedules recurring cron tasks to re-run prompts on an interval.",
                   "contentFile": "built-in/bundled-skills/loop/loop.md"
@@ -540,7 +540,7 @@
                   "path": "built-in/bundled-skills/claude-api/claude-api.md",
                   "type": "file",
                   "feature": "bundled-skills",
-                  "badge": "builtin",
+                  "badge": "skill",
                   "label": "/claude-api",
                   "description": "Loads API and SDK reference material for your project's language. Auto-activates on imports.",
                   "contentFile": "built-in/bundled-skills/claude-api/claude-api.md"
@@ -553,14 +553,14 @@
           "name": "commands",
           "path": "built-in/commands",
           "type": "directory",
-          "badge": "builtin",
+          "badge": "commands",
           "children": [
             {
               "name": "BUILT-IN-COMMANDS.md",
               "path": "built-in/commands/BUILT-IN-COMMANDS.md",
               "type": "file",
               "feature": "built-in-commands",
-              "badge": "builtin",
+              "badge": "commands",
               "label": "Built-in Commands Overview",
               "description": "All slash commands baked into Claude Code, organised by category.",
               "contentFile": "built-in/commands/BUILT-IN-COMMANDS.md"
@@ -575,7 +575,7 @@
                   "path": "built-in/commands/btw/btw.md",
                   "type": "file",
                   "feature": "built-in-commands",
-                  "badge": "builtin",
+                  "badge": "commands",
                   "label": "/btw",
                   "description": "Ask a side question without adding to conversation history.",
                   "contentFile": "built-in/commands/btw/btw.md"
@@ -592,7 +592,7 @@
                   "path": "built-in/commands/compact/compact.md",
                   "type": "file",
                   "feature": "built-in-commands",
-                  "badge": "builtin",
+                  "badge": "commands",
                   "label": "/compact",
                   "description": "Compress conversation to reclaim context window space.",
                   "contentFile": "built-in/commands/compact/compact.md"
@@ -609,7 +609,7 @@
                   "path": "built-in/commands/diff/diff.md",
                   "type": "file",
                   "feature": "built-in-commands",
-                  "badge": "builtin",
+                  "badge": "commands",
                   "label": "/diff",
                   "description": "Interactive diff viewer for uncommitted changes and per-turn diffs.",
                   "contentFile": "built-in/commands/diff/diff.md"
@@ -626,7 +626,7 @@
                   "path": "built-in/commands/init/init.md",
                   "type": "file",
                   "feature": "built-in-commands",
-                  "badge": "builtin",
+                  "badge": "commands",
                   "label": "/init",
                   "description": "Analyse your codebase and generate a starter CLAUDE.md.",
                   "contentFile": "built-in/commands/init/init.md"
@@ -643,7 +643,7 @@
                   "path": "built-in/commands/rewind/rewind.md",
                   "type": "file",
                   "feature": "built-in-commands",
-                  "badge": "builtin",
+                  "badge": "commands",
                   "label": "/rewind",
                   "description": "Restore conversation and code to a previous checkpoint.",
                   "contentFile": "built-in/commands/rewind/rewind.md"

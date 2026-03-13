@@ -204,6 +204,7 @@ class ContentLoader {
 
     html += '</div>';
     content.innerHTML = html;
+    content.scrollTop = 0;
 
     // Attach event handlers
     this._attachHandlers(content);
