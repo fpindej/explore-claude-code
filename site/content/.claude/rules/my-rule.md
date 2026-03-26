@@ -23,7 +23,7 @@ Extends CLAUDE.md with patterns specific to application source files.
 
 ---
 
-This is a starter rule file. The filename `my-rule.md` is just an example. Name your rules descriptively: `database.md`, `security.md`, `api-design.md`.
+This is a starter rule file. The filename `my-rule.md` is just an example. Name your rules descriptively: `code-style.md`, `testing.md`, `error-handling.md`.
 
 ## Anatomy of This File
 
@@ -88,8 +88,8 @@ Example `paths` values for common rule files:
 
 | Rule file | paths |
 |---|---|
-| `api-design.md` | `["src/api/**/*.ts", "src/routes/**/*.py"]` |
-| `test-patterns.md` | `["**/*.test.{ts,js}", "tests/**/*.py"]` |
-| `migrations.md` | `["**/migrations/**/*", "src/models/**/*"]` |
-| `ui-patterns.md` | `["src/views/**/*.ts", "src/styles/**/*.css"]` |
-| `ci-cd.md` | `["Dockerfile*", ".github/**/*", "*.yml"]` |
+| `code-style.md` | `["src/**/*.ts", "src/**/*.py"]` |
+| `testing.md` | `["**/*.test.{ts,js}", "tests/**/*.py"]` |
+| `error-handling.md` | `["src/**/*.ts", "src/**/*.py"]` |
+| `security.md` | `["src/**/*", "config/**/*"]` |
+| `documentation.md` | `["**/*.md", "docs/**/*"]` |

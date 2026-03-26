@@ -4,7 +4,7 @@ Markdown files that provide [contextual conventions](^Loaded into context only w
 
 ## Quick Start
 
-1. Create a file: `.claude/rules/api-patterns.md`
+1. Create a file: `.claude/rules/code-style.md`
 2. Optionally add [frontmatter](^A YAML block at the top of the file between --- markers. Contains the paths field to scope rules to specific files) with `paths` to scope it to specific files
 3. Write your conventions in the body
 4. Commit to version control so your team shares the same rules
@@ -60,20 +60,20 @@ Use **CLAUDE.md** for project-wide context that always applies. Use **rules** fo
 
 ## Common Patterns
 
-**Language-specific style guides**: one rule per language with paths targeting that file type. Backend conventions load only when Claude reads backend code.
+**Language-specific style guides**: one rule per language with paths targeting that file type. Python conventions load only when Claude reads `.py` files.
 
-**Testing conventions**: testing patterns that activate only when working in test directories. Keeps test-specific rules out of context during normal development.
+**Testing conventions**: testing patterns that activate only when working in test files. Keeps test-specific rules out of context during normal development.
 
-**API patterns**: endpoint conventions, error handling, and response format rules scoped to API handler files.
+**Error handling**: error conventions scoped to source files. How to report errors, what to log, what to surface to users.
 
-**Infrastructure rules**: Docker, CI/CD, and deployment conventions scoped to infrastructure files. Prevents infrastructure noise when reading application code.
+**Security rules**: input validation, authentication, and dependency policies scoped to relevant files.
 
-**Database patterns**: ORM conventions, migration rules, and query patterns scoped to data access files.
+**Documentation standards**: comment style, docstring format, and README conventions scoped to the files they apply to.
 
 ## Tips
 
 - Keep rules focused. One concern per file, not one giant file with everything
-- Use descriptive filenames: `backend-api.md`, `testing.md`, `frontend-styles.md`
+- Use descriptive filenames: `code-style.md`, `testing.md`, `error-handling.md`
 - Keep individual rule files concise. Every loaded rule consumes context window tokens alongside CLAUDE.md
 - Rules with no `paths` are always loaded, so use them sparingly to avoid context bloat
 - Rules are passive context. If you need Claude to run scripts or follow multi-step workflows, use a [skill](^Skills are reusable instruction packages with optional scripts, references, and invocation via /skill-name) instead
