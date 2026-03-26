@@ -8,7 +8,7 @@ Extends CLAUDE.md with patterns specific to application source files.
 
 ## Error Handling
 - Always use the project's error types, never throw raw strings or generic errors
-- Log detailed context server-side, return only safe messages to callers
+- Log detailed context internally, return only safe messages to callers
 - Catch errors at boundaries (API handlers, event listeners), not deep in utility code
 
 ## Naming
