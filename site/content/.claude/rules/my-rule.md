@@ -1,27 +1,27 @@
 ---
 paths:
-  - "src/backend/**/*.cs"
-  - "src/api/**/*.ts"
+  - "src/**/*.ts"
+  - "src/**/*.py"
 ---
 
-# API Conventions
+# Source Code Conventions
 
-Extends CLAUDE.md with patterns specific to API endpoint files.
+Extends CLAUDE.md with patterns specific to application source files.
 
 ## Error Handling
-- Use the project's error factory for all error responses, never raw status codes
-- Client-facing messages come from constants only, never interpolated runtime values
-- Log detailed errors server-side, return generic messages to clients
+- Always use the project's error types, never throw raw strings or generic errors
+- Log detailed context server-side, return only safe messages to callers
+- Catch errors at boundaries (API handlers, event listeners), not deep in utility code
 
-## Controllers
-- Authenticated endpoints extend the base API controller
-- Always include summary docs and response type annotations
-- Accept a cancellation token as the last parameter
+## Naming
+- Functions that return booleans start with `is`, `has`, or `should`
+- Constants use UPPER_SNAKE_CASE, variables and functions use camelCase or snake_case per language convention
+- File names match their primary export: `UserService` lives in `user-service.ts` or `user_service.py`
 
-## Response Format
-- Wrap all responses in the standard envelope: `{ data, errors, meta }`
-- Use pagination metadata for list endpoints
-- Include request IDs in error responses for traceability
+## Imports and Dependencies
+- Group imports: standard library first, external packages second, internal modules third
+- No circular imports. If two modules need each other, extract the shared logic into a third
+- Prefer explicit imports over wildcards
 
 ---
 
@@ -43,7 +43,7 @@ The **body** contains your actual conventions. Write them as direct instructions
 |---|---|
 | `"src/**/*.ts"` | All TypeScript files under src/ |
 | `"**/*.test.{ts,js}"` | Test files at any depth |
-| `"src/backend/**/*.cs"` | C# files in the backend directory |
+| `"src/**/*.py"` | Python files in the src directory |
 | `"docker-compose*.yml"` | Docker Compose files in the project |
 | `"**/*.sql"` | All SQL files anywhere in the project |
 
